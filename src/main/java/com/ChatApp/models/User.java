@@ -33,7 +33,7 @@ public class User {
 	
 
 	@Column(nullable = false)
-	@Size(min=6, message="Password must at least contain 6 caracters")
+	@Size(min=6, message="Password must at least contain 6 characters")
 	private String password;
 	
 	@Column(unique = true, nullable = false)

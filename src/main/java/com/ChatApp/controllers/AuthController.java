@@ -39,6 +39,7 @@ public class AuthController {
 		model.addAttribute("user", new User());
 		return "auth/signup";
 	}
+
 	
 	@PostMapping("/signup")
 	public String signupSubmit(@Valid User user, BindingResult bindingResult, Model model) {
@@ -46,8 +47,7 @@ public class AuthController {
         if (bindingResult.hasErrors()) {
            return "auth/signup";
         }
-		
-		
+			
 		if(userRepository.findByUsername(user.getUsername()) != null)
 			return "redirect:/signup?username=false";
 		
@@ -59,7 +59,7 @@ public class AuthController {
 		user.setPassword(password);
 		try {
 			userRepository.save(user);
-			MailController.sendMail("jad-bassil@hotmail.com", user.getFname());
+			MailController.sendMail(user.getEmail(), user.getFname());
 		}catch (Exception e) {
 			return "redirect:/error";
 		}
@@ -86,6 +86,7 @@ public class AuthController {
 			//return "redirect:/login?verified=false";
 			return new ModelAndView(new RedirectView("/login?verified=false", true));
 		}else {
+			/*when the user logged in , save it in a session*/
 			session.setAttribute("user", user);
 			List<Chat> privateChats = new ArrayList<>();
 			List<Chat> groupChats = new ArrayList<>();

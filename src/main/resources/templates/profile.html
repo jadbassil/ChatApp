@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head> 
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		<!-- Website CSS style -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+		<!-- jQuery library -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+		<!-- Latest compiled JavaScript -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+		<!-- Website Font style -->
+	    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
+		
+		
+		<title>Profile</title>
+	</head>
+<body style="background-color:#efefef">
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" th:href="@{/profile(id=${session.user.id})}" th:text="${session.user.username}">WebSiteName</a>
+    </div>
+    <ul class="nav navbar-nav">
+      <li class="active"><a href="chat">Home</a></li>
+    </ul>
+    <form class="navbar-form navbar-left" action="/search">
+      <div class="form-group">
+        <input type="text" class="form-control" placeholder="Search" name="search">
+      </div>
+      <button type="submit" class="btn btn-default">Search</button>
+    </form>
+  </div>
+</nav>
+
+<form action="@{/profile}">
+<div class="container" style="width:100%">
+      <div class="row">
+
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xs-offset-0 col-sm-offset-0 col-md-offset-3 col-lg-offset-3 toppad" >
+   
+   
+          <div class="panel panel-info">
+            <div class="panel-heading">
+              <h2  th:text="${user.fname + ' ' + user.lname}" ></h2>
+            </div>
+            <div class="panel-body">
+              <div class="row">
+                <div class="col-md-3 col-lg-3 " align="center">
+                	<img th:src="@{${'images/' + user.gender + '.jpg'}}" alt="User Pic" class="img-circle img-responsive"/> 
+                </div>
+                
+                <!--<div class="col-xs-10 col-sm-10 hidden-md hidden-lg"> <br>
+                  <dl>
+                    <dt>DEPARTMENT:</dt>
+                    <dd>Administrator</dd>
+                    <dt>HIRE DATE</dt>
+                    <dd>11/12/2013</dd>
+                    <dt>DATE OF BIRTH</dt>
+                       <dd>11/12/2013</dd>
+                    <dt>GENDER</dt>
+                    <dd>Male</dd>
+                  </dl>
+                </div> -->
+                
+                <div class=" col-md-9 col-lg-9 "> 
+                  <table class="table table-user-information">
+                    <tbody>
+                      <tr>
+                        <td><i style="margin-right:5px;" class="fa fa-users"></i>Username:</td>
+                        <td th:text="${user.username}"></td>
+                      </tr>         
+                  	 <tr>
+                        <td><i style="margin-right:5px;" class="glyphicon glyphicon-user"></i>First Name:</td>
+                        <td th:text="${user.fname}"></td>
+                      </tr>
+                      <tr>
+                        <td><i style="margin-right:5px;" class="glyphicon glyphicon-user"></i>Last Name:</td>
+                        <td th:text="${user.lname}"></td>
+                      </tr>
+                      <tr>
+                        <td><i style="margin-right:5px;" class="fa fa-venus-mars"></i>Gender</td>
+                        <td th:text="${user.gender}"></td>
+                      </tr>
+                
+                      <tr>
+                        <td><i style="margin-right:5px;" class="glyphicon glyphicon-envelope"></i>Email</td>
+                        <td><a th:text="${user.email}" th:href="'mailto:' + ${user.email}"></a></td>
+                      </tr>
+                      <tr>
+                        <td><i style="margin-right:5px;" class="glyphicon glyphicon-phone"></i>Phone Number</td>
+                        <td th:text="${user.phone}"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          
+                <div class="panel-footer">
+                        <a type="button" class="btn btn-sm btn-primary"><i style="font-size: 20px;" class="glyphicon glyphicon-envelope"></i></a>
+                        <span class="pull-right" th:utext="${session.user.id == user.id} ? '<a  href=\'/editProfile\' class=\'btn btn-sm btn-warning\'><i style=\'font-size:20px;\' class=\'glyphicon glyphicon-edit\'></i></a>' : ''"> 
+                		</span>
+                </div>  
+          </div>
+        </div>
+      </div>
+    </div>
+    </form>
+</body>
+</html>

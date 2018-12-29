@@ -44,7 +44,7 @@
    						 </div>
    						 <div th:if="${param.signup}">
        							<div class="alert alert-info">
-             						You have been signed up successfully. Please verify tour email.
+             						You have been signed up successfully. Please verify your email.
        							</div>
    						 </div>
    						  <div th:if="${param.verified}">
@@ -79,11 +79,12 @@
 						<div class="form-actions">
 							<input type="submit" class="btn btn-primary btn-lg btn-block login-button" value="Sign in"/>
 						</div>
-						
+						<br>
+						<div class="cols-md-12">
 						<div>
-							<p>New User? <a href="/signup">Click here</a> to signup</p>
+							<p>Don't have an account ! <a href="/signup">Sign Up Here </a> </p>
 						</div>
-						
+						</div>
 					</form>
 				</div>
 			</div>

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta charset="ISO-8859-1">
 <link rel="stylesheet" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}">
  <script th:src="@{/webjars/jquery/3.3.1/jquery.min.js}"></script>
@@ -13,7 +14,7 @@
 <nav class="navbar navbar-inverse">
   <div class="container-fluid">
     <div class="navbar-header">
-      <a class="navbar-brand" href="#" th:text="${session.user.username}">WebSiteName</a>
+      <a class="navbar-brand" th:href="@{/profile(id=${session.user.id})}" th:text="${session.user.username}"></a>
     </div>
     <ul class="nav navbar-nav">
       <li class="active"><a href="chat">Home</a></li>
