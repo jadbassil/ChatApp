@@ -13,6 +13,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "messages")
 public class Message {
@@ -33,6 +35,7 @@ public class Message {
 	
 	@ManyToOne
 	@JoinColumn(name = "chatId")
+	@JsonBackReference
 	private Chat chat;
 
 	public Message() {
@@ -86,5 +89,12 @@ public class Message {
 	public void setChat(Chat chat) {
 		this.chat = chat;
 	}
+
+	@Override
+	public String toString() {
+		return "Message [messageId=" + messageId + ", senderId=" + senderId + ", message=" + message + ", time=" + time
+				+ ", chat=" + chat + "]";
+	}
+	
 	
 }

@@ -167,6 +167,14 @@ public class User {
 		return "User [id=" + id + ", fname=" + fname + ", lname=" + lname + ", username=" + username + ", password="
 				+ password + ", email=" + email + ", verified=" + verified + "]";
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		User u =(User) obj;
+		if(id == u.id)
+			return true;
+		return false;
+	}
 	
 	
 	

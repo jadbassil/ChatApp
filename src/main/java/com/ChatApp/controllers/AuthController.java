@@ -2,7 +2,9 @@ package com.ChatApp.controllers;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -20,6 +22,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import com.ChatApp.models.Chat;
 import com.ChatApp.models.User;
+import com.ChatApp.repositories.ChatRepository;
 import com.ChatApp.repositories.UserRepository;
 
 
@@ -28,6 +31,8 @@ public class AuthController {
 	
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	private ChatRepository chatRepository;
 	
 	@GetMapping("/index")
 	public String index() {
@@ -46,8 +51,6 @@ public class AuthController {
         if (bindingResult.hasErrors()) {
            return "auth/signup";
         }
-		
-		
 		if(userRepository.findByUsername(user.getUsername()) != null)
 			return "redirect:/signup?username=false";
 		
@@ -89,13 +92,20 @@ public class AuthController {
 			session.setAttribute("user", user);
 			List<Chat> privateChats = new ArrayList<>();
 			List<Chat> groupChats = new ArrayList<>();
+			Map<String, Integer> privateChatsNames = new HashMap<String, Integer>();
 			for(Chat c : user.getChats()) {
-				if(c.getType() == 0)
+				if(c.getType() == 0) {
 					privateChats.add(c);
+					for(User u: c.getUsers()) {
+						if(!u.getUsername().equals(user.getUsername()))
+							privateChatsNames.put(u.getUsername(), c.getChatId());
+					}
+				}				
 				else if(c.getType() == 1)
 					groupChats.add(c);
 			}
 			mav.addObject("privateChats", privateChats);
+			mav.addObject("privateChatsNames", privateChatsNames);
 			mav.addObject("groupChats", groupChats);
 			mav.addObject("user", user);
 			mav.setViewName("/chat");

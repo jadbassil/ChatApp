@@ -1,7 +1,10 @@
 package com.ChatApp.controllers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,6 +16,7 @@ import com.ChatApp.models.User;
 import com.ChatApp.repositories.ChatRepository;
 import com.ChatApp.repositories.UserRepository;
 
+
 @Controller
 public class ChatController {
 	
@@ -21,8 +25,17 @@ public class ChatController {
 	@Autowired
 	private ChatRepository chatRepository;
 	
-	@GetMapping("/chat")
-	public ModelAndView chat(HttpSession session) {
+	@GetMapping("/")
+	public String defaultChat(HttpSession session) {
+		User user = (User) session.getAttribute("user");
+		if(user == null) {
+			return "auth/login";
+		}
+		return "chat";
+	}
+	
+	@GetMapping({"/chat", "/chat/{id}"})
+	public ModelAndView getChat(@RequestParam	(name="id", required=false) String id, HttpSession session) {
 		User user = (User) session.getAttribute("user");
 		if(user == null) {
 			return new ModelAndView("auth/login");
@@ -31,17 +44,30 @@ public class ChatController {
 		mav.addObject("user", user);
 		List<Chat> privateChats = new ArrayList<>();
 		List<Chat> groupChats = new ArrayList<>();
+		Map<String, Integer> privateChatsNames = new HashMap<String, Integer>();
 		for(Chat c : user.getChats()) {
-			if(c.getType() == 0)
+			if(c.getType() == 0) {
 				privateChats.add(c);
+				for(User u: c.getUsers()) {
+					if(!u.getUsername().equals(user.getUsername()))
+						privateChatsNames.put(u.getUsername(), c.getChatId());
+				}
+			}				
 			else if(c.getType() == 1)
 				groupChats.add(c);
 		}
-		mav.addObject("user", user);
+		if(id != null) {
+			System.out.println(id);
+			int id1 = Integer.parseInt(id);
+			Chat chat = chatRepository.findById(id1).orElse(null);
+			mav.addObject("chat", chat);
+		}
+		System.out.println(privateChatsNames);
+		mav.addObject("privateChatsNames", privateChatsNames);
 		mav.addObject("privateChats", privateChats);
 		mav.addObject("groupChats", groupChats);
 		mav.setViewName("/chat");
-		return mav;
+		return mav;	
 	}
 	
 	@GetMapping("/newchat")
@@ -50,26 +76,32 @@ public class ChatController {
 		ModelAndView mav = new ModelAndView("/chat");
 		User user1 = (User) session.getAttribute("user");
 		User user2 = userRepository.findById(newId).orElse(null);
-		
+		if(user1 == null)
+			return new ModelAndView("auth/login");
 		Chat chat = new Chat();
 		chat.setAdmin(user1.getId());
-		chat.setType(0); //private
-		chat.setName(user2.getUsername());
-		
+		chat.setType(0); //private		
 		chatRepository.save(chat);
 		user1.getChats().add(chat); user2.getChats().add(chat);
-		userRepository.save(user1); userRepository.save(user2);
 		List<Chat> privateChats = new ArrayList<>();
 		List<Chat> groupChats = new ArrayList<>();
+		Map<String, Integer> privateChatsNames = new HashMap<String, Integer>();
 		for(Chat c : user1.getChats()) {
-			if(c.getType() == 0)
+			if(c.getType() == 0) {
 				privateChats.add(c);
+				for(User u: c.getUsers()) {
+					if(!u.getUsername().equals(user1.getUsername()))
+						privateChatsNames.put(u.getUsername(), c.getChatId());
+				}
+			}				
 			else if(c.getType() == 1)
 				groupChats.add(c);
 		}
+		userRepository.save(user1); userRepository.save(user2);
 		mav.addObject("chat", chat);
 		mav.addObject("privateChats", privateChats);
 		mav.addObject("groupChats", groupChats);
+		mav.addObject("privateChatsNames", privateChatsNames);
 		return mav;
 	}
 		

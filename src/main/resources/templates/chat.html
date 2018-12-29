@@ -7,13 +7,25 @@
  <script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="css/chat.css" type="text/css"/>
+<script src="/webjars/jquery/jquery.min.js"></script>
+ <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+<script src="/webjars/stomp-websocket/stomp.min.js"></script>
+<script type="text/javascript" src="js/chat.js"></script>
+
 </head>
-<body>
+<body >
+<div th:if="${chat} != null">
+<script th:inline="javascript">
+	var chatId= /*[[${chat.chatId}]]*/ 'chatId';
+	var userId = /*[[${session.user.id}]]*/ 'userId';
+	connect(userId, chatId);
+</script>
+</div>
 
 <nav class="navbar navbar-inverse">
   <div class="container-fluid">
     <div class="navbar-header" layout:fragement="content">
-      <a class="navbar-brand" href="/chat" th:text="${user.username}"></a>
+      <a class="navbar-brand" href="/chat" th:text="${session.user.username}"></a>
     </div>
     <ul class="nav navbar-nav">
       <li class="active"><a href="/chat">Home</a></li>
@@ -32,70 +44,55 @@
     <i class="fa fa-caret-down"></i>
   </button>
   <div class="dropdown-container">
-  	<th:block th:each="privateChat: ${privateChats}">
-  		<a th:href="@{/chat(id=${privateChat.chatId})}" th:text="${privateChat.name}"></a>
+  	<th:block th:each="privateChat: ${privateChatsNames}">
+  		<a th:href="@{/chat(id=${privateChat.value})}" th:text="${privateChat.key}"></a>
   	</th:block>
   </div>
    <button class="dropdown-btn">Group Chats 
     <i class="fa fa-caret-down"></i>
   </button>
   <div class="dropdown-container">
-  	<th:block th:each="privateChat: ${privateChats}">
-  		<a th:href="@{/chat(id=${privateChat.chatId})}" th:text="${privateChat.name}"></a>
+  	<th:block th:each="groupChat: ${groupChats}">
+  		<a th:href="@{/chat(id=${groupChat.chatId})}" th:text="${groupChat.name}"></a>
   	</th:block>
   </div>
 </div>
 
 <div class="main">
 	<div class="mesgs">
-	  <div class="msg_history">
-	    <div class="incoming_msg">
-	      <!-- <div class="incoming_msg_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div> -->
-	      <div class="received_msg">
-	        <div class="received_withd_msg">
-	          <p>Test which is a new approach to have all
-	            solutions</p>
-	          <span class="time_date"> 11:01 AM    |    June 9</span></div>
-	      </div>
-	    </div>
-	    <div class="outgoing_msg">
-	      <div class="sent_msg">
-	        <p>Test which is a new approach to have all
-	          solutions</p>
-	        <span class="time_date"> 11:01 AM    |    June 9</span> </div>
-	    </div>
-	    <div class="incoming_msg">
-	    
-	      <div class="received_msg">
-	        <div class="received_withd_msg">
-	          <p>Test, which is a new approach to have</p>
-	          <span class="time_date"> 11:01 AM    |    Yesterday</span></div>
-	      </div>
-	    </div>
-	    <div class="outgoing_msg">
-	      <div class="sent_msg">
-	        <p>Apollo University, Delhi, India Test</p>
-	        <span class="time_date"> 11:01 AM    |    Today</span> </div>
-	    </div>
-	    <div class="incoming_msg">
-	     
-	      <div class="received_msg">
-	        <div class="received_withd_msg">
-	          <p>We work directly with our designers and suppliers,
-	            and sell direct to you, which means quality, exclusive
-	            products, at a price anyone can afford.</p>
-	          <span class="time_date"> 11:01 AM    |    Today</span></div>
-	      </div>
-	    </div>
+	  <div th:if="${chat != null}" class="msg_history" id="msg-history">
+		<th:block th:each="message : ${chat.messages}">
+			<div th:if="${message.senderId != session.user.id}" class='incoming_msg'> 
+		      <div class='received_msg'>
+		        <div class='received_withd_msg'>
+ 		          <p th:text="${message.message}">message</p>
+		          <span class='time_date' th:text="${message.time}">time</span>
+	          	</div>
+		      </div>
+	         </div>
+	         
+  	    	<div  th:if="${message.senderId} == ${session.user.id}" class="outgoing_msg">
+	      		<div class="sent_msg">
+		        	<p th:text="${message.message}">message</p>
+		        	<span class="time_date" th:text="${message.time}">time</span>
+	        	</div>
+	    	</div>
+
+		</th:block>
+	  </div>
+	  <div th:if="${chat == null}">
+	  	<h5>No chat selected</h5>
 	  </div>
   	</div>
- 	<div class="panel-footer">
+ 	<div th:if="${chat !=null}" class="panel-footer">
 	    <div class="input-group">
-	        <input id="btn-input" type="text" class="form-control input-sm chat_input" placeholder="Write your message here..." />
+	    	<input type="hidden" name="chatId" th:value="${chat.chatId}"/>
+	    	<input type="hidden" name="senderId" th:value="${session.user.id}"/>
+	        <input id="btn-input" type="text" name="message" class="form-control input-sm chat_input" placeholder="Write your message here..." />
 	        <span class="input-group-btn">
-	        <button class="btn btn-primary btn-sm" id="btn-chat"><i class="fa fa-send fa-1x" aria-hidden="true"></i></button>
+	        <button th:onclick="'sendMessage(\'' +${session.user.id} +'\',\''+${chat.chatId}+'\')'" class="btn btn-primary btn-sm" id="btn-chat"><i class="fa fa-send fa-1x" aria-hidden="true"></i></button>
 	        </span>
-	    </div>
+	    </div> 
 	</div>
   
 </div>
