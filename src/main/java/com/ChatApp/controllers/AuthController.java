@@ -5,10 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
@@ -19,10 +17,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
-
 import com.ChatApp.models.Chat;
 import com.ChatApp.models.User;
-import com.ChatApp.repositories.ChatRepository;
 import com.ChatApp.repositories.UserRepository;
 
 
@@ -31,8 +27,6 @@ public class AuthController {
 	
 	@Autowired
 	private UserRepository userRepository;
-	@Autowired
-	private ChatRepository chatRepository;
 	
 	@GetMapping("/index")
 	public String index() {

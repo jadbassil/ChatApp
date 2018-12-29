@@ -37,7 +37,7 @@ public class UserController {
 				add=true;
 				if(u.getId() == user.getId())
 					add=false;
-				for(Chat c: u.getChats()) {
+				for(Chat c: user.getChats()) {
 					if(c.getUsers().contains(u))
 						add=false;
 				}	

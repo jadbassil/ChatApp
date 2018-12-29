@@ -52,14 +52,11 @@ public class User {
 	@Column(insertable = false, columnDefinition = "BIT default '0'")
 	private Boolean verified;
 	
-	@ManyToMany
+	@ManyToMany(cascade={CascadeType.REFRESH},fetch = FetchType.EAGER)
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@JoinTable(name="ChatPartipants", joinColumns = @JoinColumn(name="user_id", referencedColumnName="id"), inverseJoinColumns = @JoinColumn(name="chat_id", referencedColumnName="chatId"))
 	private List<Chat> chats = new ArrayList<>();
-	
-	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	private List<Friend> friends = new ArrayList<>();
-	
+
 	public User() {
 		super();
 	}
@@ -154,18 +151,11 @@ public class User {
 		this.chats = chats;
 	}
 
-	public List<Friend> getFriends() {
-		return friends;
-	}
-
-	public void setFriends(List<Friend> friends) {
-		this.friends = friends;
-	}
-
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", fname=" + fname + ", lname=" + lname + ", username=" + username + ", password="
-				+ password + ", email=" + email + ", verified=" + verified + "]";
+				+ password + ", email=" + email + ", gender=" + gender + ", phone=" + phone + ", verified=" + verified
+				+ ", chats=" + chats + "]";
 	}
 
 	@Override

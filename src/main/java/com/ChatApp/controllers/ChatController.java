@@ -71,7 +71,7 @@ public class ChatController {
 	}
 	
 	@GetMapping("/newchat")
-	public ModelAndView newchat(@RequestParam String id, HttpSession session) {
+	public ModelAndView newPrivateChat(@RequestParam String id, HttpSession session) {
 		int newId = Integer.parseInt(id);
 		ModelAndView mav = new ModelAndView("/chat");
 		User user1 = (User) session.getAttribute("user");
@@ -80,9 +80,13 @@ public class ChatController {
 			return new ModelAndView("auth/login");
 		Chat chat = new Chat();
 		chat.setAdmin(user1.getId());
-		chat.setType(0); //private		
+		chat.setType(0); //private	
+		chat.getUsers().add(user1); chat.getUsers().add(user2);
+		System.out.println(user1);
 		chatRepository.save(chat);
 		user1.getChats().add(chat); user2.getChats().add(chat);
+		session.setAttribute("user", user1);
+		System.out.println(user1);
 		List<Chat> privateChats = new ArrayList<>();
 		List<Chat> groupChats = new ArrayList<>();
 		Map<String, Integer> privateChatsNames = new HashMap<String, Integer>();
@@ -97,13 +101,12 @@ public class ChatController {
 			else if(c.getType() == 1)
 				groupChats.add(c);
 		}
-		userRepository.save(user1); userRepository.save(user2);
+		System.out.println(privateChatsNames);
 		mav.addObject("chat", chat);
 		mav.addObject("privateChats", privateChats);
 		mav.addObject("groupChats", groupChats);
 		mav.addObject("privateChatsNames", privateChatsNames);
 		return mav;
-	}
-		
+	}			
 
 }

@@ -37,7 +37,7 @@ public class Chat {
 	@Column(nullable = true)
 	private String name;
 	
-	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+	@ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.EAGER)
 	@JoinTable(name="ChatPartipants", joinColumns = @JoinColumn(name="chat_id", referencedColumnName="chatId"), inverseJoinColumns = @JoinColumn(name="user_id", referencedColumnName="id"))
 	private List<User> users = new ArrayList<>();
 	
@@ -111,8 +111,6 @@ public class Chat {
 
 	public void setMessages(Set<Message> messages) {
 		this.messages = messages;
-	}
-
-	
+	}	
 	
 }
