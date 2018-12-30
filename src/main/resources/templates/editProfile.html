@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+ <head> 
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta charset="ISO-8859-1">
+		<link rel="stylesheet" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}">
+ 		<script th:src="@{/webjars/jquery/3.3.1/jquery.min.js}"></script>
+ 		<script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+		<!-- Website Font style -->
+	    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
+		
+		
+		<title>Edit your profile</title>
+	</head>
+<body>
+
+
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" th:href="@{/profile(id=${session.user.id})}" th:text="${session.user.username}"></a>
+    </div>
+    <ul class="nav navbar-nav">
+      <li class="active"><a href="/chat">Home</a></li>
+    </ul>
+    <form class="navbar-form navbar-left" action="/search">
+      <div class="form-group">
+        <input type="text" class="form-control" placeholder="Search" name="search">
+      </div>
+      <button type="submit" class="btn btn-default">Search</button>
+    </form>
+  </div>
+</nav>
+
+
+
+<div class="col-md-3">
+        <div class="text-center">
+          <img th:src="@{${'images/' + session.user.gender + '.jpg'}}" class="avatar img-circle img-responsive" alt="avatar">
+        </div>
+</div>
+
+ <div class="container">
+    <h1>Edit Profile</h1>
+  	<hr>
+	<div class="row">     
+      <!-- edit form column -->
+      <div class="col-md-9 personal-info">
+         
+   		<div th:if="${param.edited}">
+       		<div class="alert alert-info">
+             	Your profile has been successfully updated.
+       		</div>
+   		</div>
+        <h3>Personal info</h3>
+        
+        <form class="form-horizontal" th:object="${user}" action="/editProfile" method="post">
+        
+          <div class="form-group" th:classappend="${#fields.hasErrors('fname')} ? has-error : ''">
+            <label class="col-lg-3 control-label">First name:</label>
+            <div class="col-lg-5">
+              <input class="form-control" th:field="*{fname}" type="text" th:placeholder="${session.user.fname}">
+            </div>
+            <span th:if="${#fields.hasErrors('fname')}" class="help-block" th:errors="*{fname}"></span>
+          </div>
+          
+          <div class="form-group" th:classappend="${#fields.hasErrors('lname')} ? has-error : ''">
+            <label class="col-lg-3 control-label">Last name:</label>
+            <div class="col-lg-5">
+              <input class="form-control" th:field="*{lname}" type="text" th:placeholder="${session.user.lname}">
+            </div>
+            <span th:if="${#fields.hasErrors('lname')}" class="help-block" th:errors="*{lname}"></span>
+          </div>
+    
+          <div class="form-group" th:classappend="${#fields.hasErrors('email')} ? has-error : ''">
+            <label class="col-lg-3 control-label">Email:</label>
+            <div class="col-lg-5">
+              <input class="form-control" th:field="*{email}"  type="text" th:placeholder="${session.user.email}" />
+            </div>
+            <span th:if="${#fields.hasErrors('email')}" class="help-block" th:errors="*{email}"></span>
+          </div>
+      
+          <div class="form-group" th:classappend="${#fields.hasErrors('username')} ? has-error : ''">
+            <label class="col-md-3 control-label">Username:</label>
+            <div class="col-md-5">
+              <input class="form-control"  th:field="*{username}" type="text" th:placeholder="${session.user.username}" />
+            </div>
+            <span th:if="${#fields.hasErrors('username')}" class="help-block" th:errors="*{username}"></span>
+          </div>
+          
+          <div class="form-group" th:classappend="${#fields.hasErrors('password')} ? has-error : ''">
+            <label class="col-md-3 control-label">New Password:</label>
+            <div class="col-md-5" >
+              <input class="form-control" th:field="*{password}" type="password" placeholder="Enter your new password" />
+            </div>
+            <span th:if="${#fields.hasErrors('password')}" class="help-block" th:errors="*{password}"></span>
+          </div>
+          
+           <div class="form-group" th:classappend="${#fields.hasErrors('phone')} ? has-error : ''">
+            <label class="col-md-3 control-label">New phone number:</label>
+            <div class="col-md-5" >
+              <input class="form-control" th:field="*{phone}" type="text" th:placeholder="${session.user.phone}" />
+            </div>
+            <span th:if="${#fields.hasErrors('phone')}" class="help-block" th:errors="*{phone}"></span>
+          </div>
+          
+           <div class="form-group" th:classappend="${#fields.hasErrors('gender')} ? has-error : ''">
+            <label class="col-md-3 control-label">Gender:</label>
+            <div class="col-md-5" >
+          		<select class="form-control" th:field="*{gender}">
+      				<option value="" class="ita" th:text="---Select +' '+a+' '+gender---"/>
+      				<option value="Male" th:text="Male"/>
+        			<option value="Female" th:text="Female"/>
+         		</select>
+       		</div>
+       		  <span th:if="${#fields.hasErrors('gender')}" class="help-block" th:errors="*{gender}"></span>
+       	  </div>
+       	  
+          <div class="form-actions">
+            <label class="col-md-3 control-label"></label>
+            <div class="col-md-8">
+              <input type="submit" class="btn btn-primary" value="Save Changes">
+              </div>
+          </div>
+        </form>
+      </div>
+  </div>
+</div>
+<hr>
+</body>
+</html>

@@ -30,10 +30,9 @@ public class MailController {
 	}
 	
 	public static boolean sendMail(String mailTo, String fname) {
-		/*String msg = "<h6>Hello "+fname+"</h6>"
-				+ "<a href='http://localhost:8080/verifymail?email="+mailTo+"'>Click here </a> to verify your email";*/
-		String msg = "<h3>Hello "+fname+"</h3>"
-				+ "<a href='http://localhost:8080/verifymail?email=test@test.com'>Click here </a> to verify your email";
+		String msg = "<h6>Hello "+fname+"</h6>"
+				+ "<a href='http://localhost:8080/verifymail?email="+mailTo+"'>Click here </a> to verify your email";
+		
 		JavaMailSender sender = getJavaMailSender();
 		MimeMessage message = sender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
