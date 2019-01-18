@@ -56,7 +56,7 @@ public class AuthController {
 		user.setPassword(password);
 		try {
 			userRepository.save(user);
-			MailController.sendMail("jad-bassil@hotmail.com", user.getFname());
+			MailController.sendMail(user.getEmail(), user.getFname());
 		}catch (Exception e) {
 			return "redirect:/error";
 		}
@@ -102,7 +102,7 @@ public class AuthController {
 			mav.addObject("privateChatsNames", privateChatsNames);
 			mav.addObject("groupChats", groupChats);
 			mav.addObject("user", user);
-			mav.setViewName("/chat");
+			mav.setViewName("redirect:/chat");
 			return mav;
 		}		
 	}
@@ -113,6 +113,12 @@ public class AuthController {
 		user.setVerified(true);
 		userRepository.save(user);
 		return "redirect:/login?verified="+user.getVerified();
+	}
+	
+	@GetMapping("/logout")
+	public String logout(Model model,HttpSession session) {
+		session.removeAttribute("user");
+		return "redirect:/login?logout=true";
 	}
 }
 

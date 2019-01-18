@@ -12,6 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -37,7 +38,21 @@ public class Message {
 	@JoinColumn(name = "chatId")
 	@JsonBackReference
 	private Chat chat;
+	
+	public String getTimejs() {
+		return timejs;
+	}
 
+	public void setTimejs(String timejs) {
+		this.timejs = timejs;
+	}
+
+	@Transient
+	private String SenderName;
+
+	@Transient
+	private String timejs;
+	
 	public Message() {
 		super();
 	}
@@ -94,6 +109,14 @@ public class Message {
 	public String toString() {
 		return "Message [messageId=" + messageId + ", senderId=" + senderId + ", message=" + message + ", time=" + time
 				+ ", chat=" + chat + "]";
+	}
+
+	public String getSenderName() {
+		return SenderName;
+	}
+
+	public void setSenderName(String senderName) {
+		SenderName = senderName;
 	}
 	
 	

@@ -3,15 +3,9 @@
     <head> 
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		
-		<!-- Website CSS style -->
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-
-		<!-- jQuery library -->
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-
-		<!-- Latest compiled JavaScript -->
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
+		 <link rel="stylesheet" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}">
+		 <script th:src="@{/webjars/jquery/3.3.1/jquery.min.js}"></script>
+		 <script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
 		<!-- Website Font style -->
 	    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
 		
@@ -101,8 +95,9 @@
             </div>
           
                 <div class="panel-footer">
-                        <a type="button" class="btn btn-sm btn-primary"><i style="font-size: 20px;" class="glyphicon glyphicon-envelope"></i></a>
-                        <span class="pull-right" th:utext="${session.user.id == user.id} ? '<a  href=\'/editProfile\' class=\'btn btn-sm btn-warning\'><i style=\'font-size:20px;\' class=\'glyphicon glyphicon-edit\'></i></a>' : ''"> 
+                        <span  th:utext="${session.user.id == user.id} ? '<a  href=\'/editProfile\' class=\'btn btn-sm btn-warning\'><i style=\'font-size:20px;\' class=\'glyphicon glyphicon-edit\'></i></a>' : ''"> 
+                		</span>
+                		 <span class="pull-right" th:utext="${session.user.id == user.id} ? '<a  href=\'/logout\' class=\'btn btn-sm btn-danger\'><i style=\'font-size:20px;\' class=\'glyphicon glyphicon-log-out\'></i></a>' : ''"> 
                 		</span>
                 </div>  
           </div>

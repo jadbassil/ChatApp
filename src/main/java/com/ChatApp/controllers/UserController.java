@@ -36,22 +36,19 @@ public class UserController {
 		if(search == null)
 			return new ModelAndView("search");
 		if(search == "") {
-			boolean add;
 			List<User> users = new ArrayList<User>();
 			Iterable<User> usersIt = userRepository.findAll();
 			for (User u : usersIt) {
-				add=true;
-				if(u.getId() == user.getId())
-					add=false;
-				for(Chat c: user.getChats()) {
-					if(c.getUsers().contains(u))
-						add=false;
-				}	
-				if(add)
+				if(u.getId() != user.getId())
 					users.add(u);
 			}
 			if(users.isEmpty())
 				return new ModelAndView(new RedirectView("/search?found=false", true));
+			List<Chat> groupChats = new ArrayList<>();
+			for(Chat c: user.getChats())
+				if(c.getType() == 1 && c.getAdmin() == user.getId())
+					groupChats.add(c);
+			mav.addObject("groupChats", groupChats);
 			mav.addObject("users", users);
 			mav.setViewName("search");
 			return mav;
@@ -60,9 +57,6 @@ public class UserController {
 			User userBymail  = userRepository.findByEmail(search);
 			if(userBymail == null || userBymail.getId() == user.getId())
 				return new ModelAndView(new RedirectView("/search?found=false", true));
-			for(Chat c: user.getChats())
-				if(c.getUsers().contains(userBymail))
-					return new ModelAndView(new RedirectView("/search?found=false", true));
 			mav.addObject("users", userBymail);	
 			return mav;
 		}
@@ -70,13 +64,6 @@ public class UserController {
 			User userByUsername = userRepository.findByUsername(search);
 			if(userByUsername == null || userByUsername.getId() == user.getId())
 				return new ModelAndView(new RedirectView("/search?found=false", true));
-			for(Chat c: user.getChats()) {
-				System.out.println(userByUsername);
-				System.out.println(c.getUsers().contains(userByUsername));
-				System.out.println(c.getUsers());
-				if(c.getUsers().contains(userByUsername))
-					return new ModelAndView(new RedirectView("/search?found=false", true));
-			}
 			mav.addObject("users", userByUsername);
 		}
 		return mav;

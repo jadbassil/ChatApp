@@ -2,10 +2,10 @@
 <html xmlns:th="http://www.thymeleaf.org"  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}">
- <script th:src="@{/webjars/jquery/3.3.1/jquery.min.js}"></script>
- <script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}">
+	 <script th:src="@{/webjars/jquery/3.3.1/jquery.min.js}"></script>
+	 <script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="css/chat.css" type="text/css"/>
 <script src="/webjars/jquery/jquery.min.js"></script>
  <script src="/webjars/sockjs-client/sockjs.min.js"></script>
@@ -21,11 +21,11 @@
 	connect(userId, chatId);
 </script>
 </div>
-
+ 	
 <nav class="navbar navbar-inverse">
   <div class="container-fluid">
     <div class="navbar-header" layout:fragement="content">
-      <a class="navbar-brand" th:href="@{/profile(id=${user.id})}" th:text="${session.user.username}"></a>
+      <a class="navbar-brand" th:href="@{/profile(id=${session.user.id})}" th:text="${session.user.username}"></a>
     </div>
     <ul class="nav navbar-nav">
       <li class="active"><a href="/chat">Home</a></li>
@@ -52,29 +52,56 @@
     <i class="fa fa-caret-down"></i>
   </button>
   <div class="dropdown-container">
+	  <!-- Trigger the modal with a button -->
+	  <button type="button" class="btn btn-info btn--sm" data-toggle="modal" data-target="#myModal">New Group</button>
   	<th:block th:each="groupChat: ${groupChats}">
   		<a th:href="@{/chat(id=${groupChat.chatId})}" th:text="${groupChat.name}"></a>
   	</th:block>
   </div>
 </div>
 
+<!-- Modal -->
+ <div class="modal fade" id="myModal" role="dialog">
+   <div class="modal-dialog">
+   
+     <!-- Modal content-->
+     <div class="modal-content">
+       <div class="modal-header">
+         <button type="button" class="close" data-dismiss="modal">&times;</button>
+         <h4 class="modal-title">New Group</h4>
+       </div>
+       <div class="modal-body">
+         <form class="text-center" method="POST" action="/newGroupChat">
+         	<input type="text" class="form-control" name="groupName" placeholder="group name"/>
+         	<button type="submit" class="btn btn-success">Create</button>
+         </form>
+       </div>
+       <div class="modal-footer">
+         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+       </div>
+     </div>
+     
+   </div>
+ </div>	
+
 <div class="main">
 	<div class="mesgs">
 	  <div th:if="${chat != null}" class="msg_history" id="msg-history">
-		<th:block th:each="message : ${chat.messages}">
-			<div th:if="${message.senderId != session.user.id}" class='incoming_msg'> 
+		<th:block th:each="message : ${messages}">
+			<div th:if="${message.value.senderId != session.user.id}" class='incoming_msg'> 
 		      <div class='received_msg'>
 		        <div class='received_withd_msg'>
- 		          <p th:text="${message.message}">message</p>
-		          <span class='time_date' th:text="${message.time}">time</span>
+		          <span style="font-size: 10pt; font-wheigt: bold;" th:text="${message.key}">name</span>
+ 		          <p th:text="${message.value.message}">message</p>
+		          <span class='time_date' th:text="${#dates.format(message.value.time, 'HH:mm')}">time</span>
 	          	</div>
 		      </div>
 	         </div>
 	         
-  	    	<div  th:if="${message.senderId} == ${session.user.id}" class="outgoing_msg">
+  	    	<div  th:if="${message.value.senderId} == ${session.user.id}" class="outgoing_msg">
 	      		<div class="sent_msg">
-		        	<p th:text="${message.message}">message</p>
-		        	<span class="time_date" th:text="${message.time}">time</span>
+		        	<p th:text="${message.value.message}">message</p>
+		        	<span class="time_date" th:text="${#dates.format(message.value.time, 'HH:mm')}">time</span>
 	        	</div>
 	    	</div>
 
@@ -84,7 +111,7 @@
 	  	<h5>No chat selected</h5>
 	  </div>
   	</div>
- 	<div th:if="${chat !=null}" class="panel-footer">
+ 	<div th:if="${chat != null}" class="panel-footer">
 	    <div class="input-group">
 	    	<input type="hidden" name="chatId" th:value="${chat.chatId}"/>
 	    	<input type="hidden" name="senderId" th:value="${session.user.id}"/>
@@ -112,6 +139,19 @@ for (i = 0; i < dropdown.length; i++) {
   }
   });
 }
+var input = document.getElementById("btn-input");
+if(input){
+	input.addEventListener("keyup", function(event) {
+		  // Cancel the default action, if needed
+		  event.preventDefault();
+		  // Number 13 is the "Enter" key on the keyboard
+		  if (event.keyCode === 13) {
+		    // Trigger the button element with a click
+		    document.getElementById("btn-chat").click();
+		  }
+		});
+}
+
 </script>
 
 </body>

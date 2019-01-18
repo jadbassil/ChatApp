@@ -46,13 +46,19 @@ public class messageController {
 		return mav;
 	}
 	
-    @MessageMapping("/{id}")
+    @SuppressWarnings("deprecation")
+	@MessageMapping("/{id}")
     @SendTo("/group/{id}")
     public Message greeting(Message message, @DestinationVariable("id") String id) throws Exception {
     	Chat chat = chatRepository.findById(Integer.valueOf(id)).orElse(null);
         message.setChat(chat);
         chat.getMessages().add(message);
         chatRepository.save(chat);
+        message.setTimejs(message.getTime().getHours()+":"+message.getTime().getMinutes());
+        for(User u: chat.getUsers()){
+        	if(u.getId() == message.getSenderId())
+        		message.setSenderName(u.getFname() + " " +u.getLname());
+        }
 		return message;
     }
 	
